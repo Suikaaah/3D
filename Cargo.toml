@@ -1,0 +1,15 @@
+[package]
+name = "three_d"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.95"
+glm = "0.2.3"
+num-traits = "0.2.19"
+
+[dependencies.sdl2]
+version = "0.37.0"
+
+[dependencies.gl]
+git = "https://github.com/bjz/gl-rs"
