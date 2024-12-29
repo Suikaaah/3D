@@ -13,7 +13,7 @@ pub fn get_log(
     target: u32,
     f: unsafe fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar),
 ) -> Result<String> {
-    let mut buf = [0; 512];
+    let mut buf = [0; 1024];
     let mut length = 0;
 
     unsafe {

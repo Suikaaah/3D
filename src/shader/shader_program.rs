@@ -60,6 +60,10 @@ impl ShaderProgram {
     pub fn set_vec3(&self, name: &CStr, vec: Vec3) {
         unsafe { gl::Uniform3fv(self.locate(name), 1, vec.as_array().as_ptr() as _) }
     }
+
+    pub fn set_f32(&self, name: &CStr, value: f32) {
+        unsafe { gl::Uniform1fv(self.locate(name), 1, &value as _) }
+    }
 }
 
 impl Drop for ShaderProgram {
