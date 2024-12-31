@@ -63,6 +63,14 @@ impl ShaderProgram {
         unsafe { gl::Uniform1fv(self.locate(name), 1, &value as _) }
     }
 
+    pub fn set_vec3_array(&self, name: &CStr, vecs: &[Vec3]) {
+        unsafe { gl::Uniform3fv(self.locate(name), vecs.len() as _, vecs.as_ptr() as _) }
+    }
+
+    pub fn set_u32(&self, name: &CStr, value: u32) {
+        unsafe { gl::Uniform1ui(self.locate(name), value) }
+    }
+
     fn locate(&self, name: &CStr) -> GLint {
         unsafe { gl::GetUniformLocation(self.program, name.as_ptr()) }
     }

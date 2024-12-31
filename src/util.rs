@@ -1,5 +1,6 @@
 use anyhow::Result;
 use gl::types::{GLchar, GLsizei, GLuint};
+use glm::Vec3;
 use std::{ffi::CString, fs::File, io::Read};
 
 pub fn find_sdl_gl_driver() -> Option<u32> {
@@ -30,4 +31,12 @@ pub fn load_file(filename: &str) -> Result<CString> {
     let mut buf = String::new();
     File::open(filename)?.read_to_string(&mut buf)?;
     Ok(CString::new(buf)?)
+}
+
+pub fn sphere(theta: f32, phi: f32) -> Vec3 {
+    glm::normalize(glm::vec3(
+        phi.cos() * theta.cos(),
+        theta.sin(),
+        phi.sin() * theta.cos(),
+    ))
 }

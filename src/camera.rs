@@ -1,3 +1,4 @@
+use crate::util;
 use glm::ext as gle;
 use glm::{Mat4, Vec3};
 use num_traits::Zero;
@@ -11,7 +12,7 @@ pub struct Camera {
 
 impl Camera {
     const SPEED: f32 = 8.;
-    const SENSITIVITY: f32 = 0.05;
+    const SENSITIVITY: f32 = 1.0E-3;
 
     pub fn new() -> Self {
         Self {
@@ -25,10 +26,10 @@ impl Camera {
         gle::look_at(self.position, self.position + self.front(), self.up())
     }
 
-    pub fn input_kb(&mut self, state_kb: KeyboardState, delta: f32) {
+    pub fn input_kb(&mut self, state_kb: KeyboardState, dt: f32) {
         let mut process = |scancode, f: fn(&mut Self, f32)| {
             if state_kb.is_scancode_pressed(scancode) {
-                f(self, delta);
+                f(self, dt);
             }
         };
 
@@ -42,19 +43,16 @@ impl Camera {
 
     pub fn input_mouse(&mut self, dx: i32, dy: i32) {
         self.phi -= dx as f32 * Self::SENSITIVITY;
-        self.theta = (self.theta + dy as f32 * Self::SENSITIVITY).clamp(-89.9, 89.9);
+        self.theta = (self.theta + dy as f32 * Self::SENSITIVITY)
+            .clamp(glm::radians(-89.9), glm::radians(89.9));
+    }
+
+    pub fn front(&self) -> Vec3 {
+        util::sphere(self.theta, self.phi)
     }
 
     fn up_world() -> Vec3 {
         glm::vec3(0., -1., 0.)
-    }
-
-    fn front(&self) -> Vec3 {
-        glm::normalize(glm::vec3(
-            glm::radians(self.phi).cos() * glm::radians(self.theta).cos(),
-            glm::radians(self.theta).sin(),
-            glm::radians(self.phi).sin() * glm::radians(self.theta).cos(),
-        ))
     }
 
     fn right(&self) -> Vec3 {
@@ -66,11 +64,7 @@ impl Camera {
     }
 
     fn front_flat(&self) -> Vec3 {
-        glm::normalize(glm::vec3(
-            glm::radians(self.phi).cos() * glm::radians(self.theta).cos(),
-            0.,
-            glm::radians(self.phi).sin() * glm::radians(self.theta).cos(),
-        ))
+        glm::normalize(glm::vec3(self.phi.cos(), 0., self.phi.sin()))
     }
 
     fn right_flat(&self) -> Vec3 {
@@ -81,27 +75,27 @@ impl Camera {
         glm::normalize(glm::cross(self.right_flat(), self.front_flat()))
     }
 
-    fn move_front(&mut self, delta: f32) {
-        self.position = self.position + self.front_flat() * Self::SPEED * delta;
+    fn move_front(&mut self, dt: f32) {
+        self.position = self.position + self.front_flat() * Self::SPEED * dt;
     }
 
-    fn move_back(&mut self, delta: f32) {
-        self.position = self.position - self.front_flat() * Self::SPEED * delta;
+    fn move_back(&mut self, dt: f32) {
+        self.position = self.position - self.front_flat() * Self::SPEED * dt;
     }
 
-    fn move_right(&mut self, delta: f32) {
-        self.position = self.position + self.right_flat() * Self::SPEED * delta;
+    fn move_right(&mut self, dt: f32) {
+        self.position = self.position + self.right_flat() * Self::SPEED * dt;
     }
 
-    fn move_left(&mut self, delta: f32) {
-        self.position = self.position - self.right_flat() * Self::SPEED * delta;
+    fn move_left(&mut self, dt: f32) {
+        self.position = self.position - self.right_flat() * Self::SPEED * dt;
     }
 
-    fn move_up(&mut self, delta: f32) {
-        self.position = self.position + self.up_flat() * Self::SPEED * delta;
+    fn move_up(&mut self, dt: f32) {
+        self.position = self.position + self.up_flat() * Self::SPEED * dt;
     }
 
-    fn move_down(&mut self, delta: f32) {
-        self.position = self.position - self.up_flat() * Self::SPEED * delta;
+    fn move_down(&mut self, dt: f32) {
+        self.position = self.position - self.up_flat() * Self::SPEED * dt;
     }
 }
