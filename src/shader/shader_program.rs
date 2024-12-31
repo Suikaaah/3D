@@ -42,10 +42,6 @@ impl ShaderProgram {
         }
     }
 
-    fn locate(&self, name: &CStr) -> GLint {
-        unsafe { gl::GetUniformLocation(self.program, name.as_ptr()) }
-    }
-
     pub fn set_mat4(&self, name: &CStr, mat: &Mat4) {
         unsafe {
             gl::UniformMatrix4fv(
@@ -63,6 +59,10 @@ impl ShaderProgram {
 
     pub fn set_f32(&self, name: &CStr, value: f32) {
         unsafe { gl::Uniform1fv(self.locate(name), 1, &value as _) }
+    }
+
+    fn locate(&self, name: &CStr) -> GLint {
+        unsafe { gl::GetUniformLocation(self.program, name.as_ptr()) }
     }
 }
 

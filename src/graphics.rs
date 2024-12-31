@@ -1,6 +1,23 @@
 use gl::types::{GLsizei, GLuint};
 use std::marker::PhantomData;
 
+const F32_SIZE: GLsizei = size_of::<f32>() as _;
+pub const CUBE: &[f32] = &[
+    -0.5, -0.5, -0.5, 0.0, 0.0, -1.0, 0.5, -0.5, -0.5, 0.0, 0.0, -1.0, 0.5, 0.5, -0.5, 0.0, 0.0,
+    -1.0, 0.5, 0.5, -0.5, 0.0, 0.0, -1.0, -0.5, 0.5, -0.5, 0.0, 0.0, -1.0, -0.5, -0.5, -0.5, 0.0,
+    0.0, -1.0, -0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.0,
+    0.0, 1.0, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, -0.5, 0.5, 0.5, 0.0, 0.0, 1.0, -0.5, -0.5, 0.5, 0.0,
+    0.0, 1.0, -0.5, 0.5, 0.5, -1.0, 0.0, 0.0, -0.5, 0.5, -0.5, -1.0, 0.0, 0.0, -0.5, -0.5, -0.5,
+    -1.0, 0.0, 0.0, -0.5, -0.5, -0.5, -1.0, 0.0, 0.0, -0.5, -0.5, 0.5, -1.0, 0.0, 0.0, -0.5, 0.5,
+    0.5, -1.0, 0.0, 0.0, 0.5, 0.5, 0.5, 1.0, 0.0, 0.0, 0.5, 0.5, -0.5, 1.0, 0.0, 0.0, 0.5, -0.5,
+    -0.5, 1.0, 0.0, 0.0, 0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.5, -0.5, 0.5, 1.0, 0.0, 0.0, 0.5, 0.5,
+    0.5, 1.0, 0.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0, 0.0, 0.5, -0.5, -0.5, 0.0, -1.0, 0.0, 0.5,
+    -0.5, 0.5, 0.0, -1.0, 0.0, 0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, 0.5, 0.0, -1.0, 0.0,
+    -0.5, -0.5, -0.5, 0.0, -1.0, 0.0, -0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 0.5, 0.5, -0.5, 0.0, 1.0,
+    0.0, 0.5, 0.5, 0.5, 0.0, 1.0, 0.0, 0.5, 0.5, 0.5, 0.0, 1.0, 0.0, -0.5, 0.5, 0.5, 0.0, 1.0, 0.0,
+    -0.5, 0.5, -0.5, 0.0, 1.0, 0.0,
+];
+
 #[derive(Debug)]
 pub struct Graphics<T> {
     vbo: GLuint,
@@ -15,8 +32,6 @@ pub struct Lighting;
 pub struct LightCube;
 
 impl<T> Graphics<T> {
-    const F32_SIZE: GLsizei = size_of::<f32>() as _;
-
     pub fn draw(&self) {
         unsafe {
             gl::BindVertexArray(self.vao);
@@ -41,15 +56,15 @@ impl Graphics<Lighting> {
 
             gl::GenVertexArrays(1, &mut vao as _);
             gl::BindVertexArray(vao);
-            gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 6 * Self::F32_SIZE, 0 as _);
+            gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 6 * F32_SIZE, 0 as _);
             gl::EnableVertexAttribArray(0);
             gl::VertexAttribPointer(
                 1,
                 3,
                 gl::FLOAT,
                 gl::FALSE,
-                6 * Self::F32_SIZE,
-                (3 * Self::F32_SIZE) as _,
+                6 * F32_SIZE,
+                (3 * F32_SIZE) as _,
             );
             gl::EnableVertexAttribArray(1);
         }
@@ -79,7 +94,7 @@ impl Graphics<LightCube> {
 
             gl::GenVertexArrays(1, &mut vao as _);
             gl::BindVertexArray(vao);
-            gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 6 * Self::F32_SIZE, 0 as _);
+            gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 6 * F32_SIZE, 0 as _);
             gl::EnableVertexAttribArray(0);
         }
 
