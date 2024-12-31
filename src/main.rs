@@ -33,6 +33,7 @@ fn main() {
 
     let mut camera = Camera::new();
     let mut cubes: [Cube; 256] = array::from_fn(|_| Cube::new());
+
     let floor = Cube::floor();
     let light_pos = glm::vec3(0., 0., 0.);
     let object_color = glm::vec3(1., 1., 1.);

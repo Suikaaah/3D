@@ -18,34 +18,37 @@ pub struct Cube {
 
 impl Cube {
     pub fn new() -> Self {
-        let uni_xz = Uniform::new(-4., 4.);
-        let uni_y = Uniform::new(-12., -10.);
-        let uni_r = Uniform::new(-4., 4.);
+        let uni_phi = Uniform::new(glm::radians(-180.), glm::radians(180.));
+        let uni_r = Uniform::new(1.5, 4.);
+        let uni_y = Uniform::new(-16., -12.);
+        let uni_rot = Uniform::new(-4., 4.);
 
         let mut rng = rand::thread_rng();
         let mut f = |u| rng.sample(u);
+        let phi: f32 = f(uni_phi);
+        let r: f32 = f(uni_r);
 
         Self {
             position: Vec3::zero(),
-            velocity: glm::vec3(f(uni_xz), f(uni_y), f(uni_xz)),
+            velocity: glm::vec3(r * phi.cos(), f(uni_y), r * phi.sin()),
             rotation: Vec3::zero(),
-            rot_vel: glm::vec3(f(uni_r), f(uni_r), f(uni_r)),
-            scale: 0.3,
+            rot_vel: glm::vec3(f(uni_rot), f(uni_rot), f(uni_rot)),
+            scale: 0.5,
         }
     }
 
     pub fn floor() -> Self {
         Self {
-            position: glm::vec3(0., 25.5, 0.),
+            position: glm::vec3(0., 2.5, 0.),
             velocity: Vec3::zero(),
             rotation: Vec3::zero(),
             rot_vel: Vec3::zero(),
-            scale: 50.,
+            scale: 4.,
         }
     }
 
     pub fn update(&mut self, delta: f32) {
-        if self.position.y > 10. {
+        if self.position.y > 25. {
             *self = Cube::new();
         }
 

@@ -15,8 +15,10 @@ pub struct ShaderProgram {
 impl ShaderProgram {
     pub fn new(filename_v: &str, filename_f: &str) -> Result<Self> {
         unsafe {
-            let shader_v = ShaderCore::<Vertex>::new(filename_v)?;
-            let shader_f = ShaderCore::<Fragment>::new(filename_f)?;
+            let dir = |filename| format!("shaders/{filename}");
+
+            let shader_v = ShaderCore::<Vertex>::new(&dir(filename_v))?;
+            let shader_f = ShaderCore::<Fragment>::new(&dir(filename_f))?;
 
             let program = gl::CreateProgram();
 
