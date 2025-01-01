@@ -111,7 +111,7 @@ fn main() {
         floor.draw(&lighting, &shader_lighting);
 
         for cube in &mut cubes {
-            let diff = camera.position + camera.front() * 16. - cube.position;
+            let diff = camera.position + camera.front() * 12. - cube.position;
             cube.update(dt, (glm::normalize(diff) / glm::length(diff)) * force_mult);
             cube.draw(&lighting, &shader_lighting);
         }

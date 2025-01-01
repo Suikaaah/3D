@@ -4,8 +4,10 @@ out vec4 FragColor;
 in vec3 Normal;
 in vec3 FragPos;
 
-#define MAX_LIGHTS 256
+#define MAX_LIGHTS 225
 #define SPECULAR_STRENGTH 0.5
+#define LIGHT_DECAY 1.2
+#define DST_DECAY 1.075
 
 uniform vec3 lightPositions[MAX_LIGHTS];
 uniform vec3 lightColors[MAX_LIGHTS];
@@ -22,7 +24,12 @@ void main() {
 
     for (uint i = uint(0); i < lights; ++i) {
         vec3 ray = lightPositions[i] - FragPos;
-        float lightStrength = pow(1.1, -length(ray));
+        float lightStrength = pow(LIGHT_DECAY, -length(ray));
+
+        if (lightStrength < 0.01) {
+            continue;
+        }
+
         vec3 lightDir = normalize(ray);
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * lightColors[i] * lightStrength;
@@ -37,7 +44,7 @@ void main() {
     }
 
     float dst = length(FragPos - viewPos);
-    float dst_decay = pow(1.1, -dst);
+    float dst_decay = pow(DST_DECAY, -dst);
 
     vec3 result = (1.0 - dst_decay) * fogColor
         + dst_decay * (diffuse_acc + specular_acc + ambientColor) * objectColor;
